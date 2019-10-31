@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "927180476039",
+    "firebase_url": "https://doodlestuff-cpre388.firebaseio.com",
+    "project_id": "doodlestuff-cpre388",
+    "storage_bucket": "doodlestuff-cpre388.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:927180476039:android:3011c488e7db43ba7ab222",
+        "android_client_info": {
+          "package_name": "edu.iastate.scribblestuff"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "927180476039-84or34ee433lq18gp026i6vackr4rvtj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.iastate.scribblestuff",
+            "certificate_hash": "a7dcec272297ea8f1a772675228dd713ca0617ba"
+          }
+        },
+        {
+          "client_id": "927180476039-7gq8f4laq3oiugcq0so8alrvq0ef16ec.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASfzyH33oMI8AG2OobeZUGPbyqc0vNlRo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "927180476039-7gq8f4laq3oiugcq0so8alrvq0ef16ec.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
