@@ -15,6 +15,7 @@ public class DrawActivity extends AppCompatActivity {
 
         DrawingView drawingView;
         SeekBar drawThickness;
+        SeekBar drawColor;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
