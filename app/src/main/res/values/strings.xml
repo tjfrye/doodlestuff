@@ -4,4 +4,9 @@
     <string name="title_activity_draw">DrawActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="password">password</string>
+    <string name="example_email">example@ex.com</string>
+    <string name="please_login">Please Login</string>
+    <string name="create_account">Create Account</string>
+    <string name="login">Login</string>
 </resources>
