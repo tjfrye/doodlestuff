@@ -25,7 +25,7 @@
         app:layout_constraintTop_toBottomOf="@+id/loginTextView"
         app:layout_constraintEnd_toStartOf="@+id/editTextpassword"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/loginButton"
+        app:layout_constraintBottom_toTopOf="@+id/signInButtonEmail"
         android:ems="10"
         android:padding="8dp"
         android:layout_margin="8dp"
@@ -40,7 +40,7 @@
         app:layout_constraintTop_toBottomOf="@+id/loginTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/editTextEmail"
-        app:layout_constraintBottom_toTopOf="@+id/loginButton"
+        app:layout_constraintBottom_toTopOf="@+id/signInButtonEmail"
         android:ems="10"
         android:padding="8dp"
         android:layout_margin="8dp"
@@ -48,7 +48,7 @@
         android:inputType="textPassword" />
 
     <Button
-        android:id="@+id/loginButton"
+        android:id="@+id/signInButtonEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/editTextEmail"
@@ -64,7 +64,7 @@
         android:id="@+id/signInButtonGoogle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/loginButton"
+        app:layout_constraintTop_toBottomOf="@+id/signInButtonEmail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/createAccountButton"

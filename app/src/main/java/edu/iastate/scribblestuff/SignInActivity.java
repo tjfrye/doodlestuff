@@ -1,27 +1,14 @@
-package edu.iastate.scribblestuff; /**
- * Copyright 2016 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+package edu.iastate.scribblestuff;
 
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -43,10 +30,10 @@ import com.google.firebase.auth.GoogleAuthProvider;
 /**
  * Demonstrate Firebase Authentication using a Google ID Token.
  */
-public class GoogleSignInActivity extends AppCompatActivity implements
+public class SignInActivity extends AppCompatActivity implements
         View.OnClickListener {
 
-    private static final String TAG = "GoogleActivity";
+    private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
 
     // [START declare_auth]
@@ -55,19 +42,25 @@ public class GoogleSignInActivity extends AppCompatActivity implements
 
     private GoogleSignInClient mGoogleSignInClient;
 
-    private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
+
+    private EditText mEmailField;
+    private EditText mPasswordField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_login);
+        setContentView(R.layout.login);
 
-        sharedPreferences = this.getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = this.getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
         // Button listeners
         findViewById(R.id.signInButtonGoogle).setOnClickListener(this);
+
+        // EditText
+        mEmailField = findViewById(R.id.editTextEmail);
+        mPasswordField = findViewById(R.id.editTextpassword);
 
         // [START config_signin]
         // Configure Google Sign In
@@ -106,9 +99,11 @@ public class GoogleSignInActivity extends AppCompatActivity implements
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
+                Toast.makeText(getApplicationContext(), "Welcome " + account.getDisplayName(), Toast.LENGTH_SHORT).show();
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
+                Toast.makeText(getApplicationContext(), "Google sign in failed", Toast.LENGTH_SHORT).show();
                 // [START_EXCLUDE]
                 // [END_EXCLUDE]
             }
@@ -150,7 +145,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements
     // [END auth_with_google]
 
     // [START signin]
-    private void signIn() {
+    private void googleSignIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -161,59 +156,110 @@ public class GoogleSignInActivity extends AppCompatActivity implements
         startActivity(intent);
     }
 
-//    private void signOut() {
-//        // Firebase sign out
-//        mAuth.signOut();
-//
-//        // Google sign out
-//        mGoogleSignInClient.signOut().addOnCompleteListener(this,
-//                new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                    }
-//                });
-//    }
+    private void emailSignIn(String email, String password) {
+        Log.d(TAG, "signIn:" + email);
+        if (!validateForm()) {
+            return;
+        }
 
-//    private void revokeAccess() {
-//        // Firebase sign out
-//        mAuth.signOut();
-//
-//        // Google revoke access
-//        mGoogleSignInClient.revokeAccess().addOnCompleteListener(this,
-//                new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                    }
-//                });
-//    }
 
-//    private void updateUI(FirebaseUser user) {
-//        hideProgressDialog();
-//        if (user != null) {
-//            mStatusTextView.setText(getString(R.string.google_status_fmt, user.getEmail()));
-//            mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
-//
-//            findViewById(R.id.signInButton).setVisibility(View.GONE);
-//            findViewById(R.id.signOutAndDisconnect).setVisibility(View.VISIBLE);
-//        } else {
-//            mStatusTextView.setText(R.string.signed_out);
-//            mDetailTextView.setText(null);
-//
-//            findViewById(R.id.signInButton).setVisibility(View.VISIBLE);
-//            findViewById(R.id.signOutAndDisconnect).setVisibility(View.GONE);
-//        }
-//    }
+        // [START sign_in_with_email]
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Toast.makeText(getApplicationContext(), "Welcome " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
+                            editor.putBoolean("isLoggedIn", true);
+                            editor.apply();
+                            //updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(SignInActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            //updateUI(null);
+                        }
+
+                        // [START_EXCLUDE]
+                        if (!task.isSuccessful()) {
+                        }
+                        // [END_EXCLUDE]
+                    }
+                });
+        // [END sign_in_with_email]
+    }
+
+    private void createAccount(String email, String password) {
+        Log.d(TAG, "createAccount:" + email);
+        if (!validateForm()) {
+            return;
+        }
+
+
+        // [START create_user_with_email]
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "createUserWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Toast.makeText(getApplicationContext(), "Welcome " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
+                            editor.putBoolean("isLoggedIn", true);
+                            editor.apply();
+                            //updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            Toast.makeText(SignInActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            //updateUI(null);
+                        }
+
+                    }
+                });
+        // [END create_user_with_email]
+    }
+
+    private boolean validateForm() {
+        boolean valid = true;
+
+        String email = mEmailField.getText().toString();
+        if (TextUtils.isEmpty(email)) {
+            mEmailField.setError("Required.");
+            valid = false;
+        } else {
+            mEmailField.setError(null);
+        }
+
+        String password = mPasswordField.getText().toString();
+        if (TextUtils.isEmpty(password)) {
+            mPasswordField.setError("Required.");
+            valid = false;
+        } else {
+            mPasswordField.setError(null);
+        }
+
+        return valid;
+    }
 
     @Override
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.signInButtonGoogle) {
-            signIn();
+            Log.d(TAG, "Google sign in button clicked");
+            googleSignIn();
+        } else if(i == R.id.signInButtonEmail) {
+            Log.d(TAG, "Email sign in button clicked");
+            emailSignIn(mEmailField.getText().toString(), mPasswordField.getText().toString());
+        } else if(i == R.id.createAccountButton) {
+            Log.d(TAG, "Email create account clicked");
+            createAccount(mEmailField.getText().toString(), mPasswordField.getText().toString());
         }
-//        else if (i == R.id.signOutButton) {
-//            signOut();
-//        } else if (i == R.id.disconnectButton) {
-//            revokeAccess();
-//        }
     }
 }
