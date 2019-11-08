@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -76,13 +78,6 @@ public class SignInActivity extends AppCompatActivity implements
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
     }
 
     @Override
@@ -202,15 +197,13 @@ public class SignInActivity extends AppCompatActivity implements
                             try {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
-//                                Toast.makeText(SignInActivity.this, "Authentication failed.",
-//                                        Toast.LENGTH_SHORT).show();
                                 throw task.getException();
                             } catch(FirebaseAuthWeakPasswordException e) {
                                 Toast.makeText(getApplicationContext(), "Password too weak", Toast.LENGTH_SHORT).show();
                             } catch(FirebaseAuthUserCollisionException e) {
                                 Toast.makeText(getApplicationContext(), "User with these credentials already exists", Toast.LENGTH_SHORT).show();
                             } catch(Exception e) {
-                                Toast.makeText(SignInActivity.this, "Authentication failed.",
+                                Toast.makeText(SignInActivity.this, e.getMessage(),
                                         Toast.LENGTH_SHORT).show();
                                 Log.e(TAG, e.getMessage());
                             }
@@ -255,6 +248,12 @@ public class SignInActivity extends AppCompatActivity implements
         } else if(i == R.id.createAccountButton) {
             Log.d(TAG, "Email create account clicked");
             createAccount(mEmailField.getText().toString(), mPasswordField.getText().toString());
+
+            //TODO use fragment instead
+//            FragmentManager fragmentManager = getSupportFragmentManager();
+//            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//            CreateAccountFragment fragment = new CreateAccountFragment();
+//            fragmentTransaction.add(R.id.container, fragment).commit();
         }
     }
 }
