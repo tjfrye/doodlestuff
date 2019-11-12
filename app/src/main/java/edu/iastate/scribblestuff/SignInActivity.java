@@ -27,11 +27,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.UserProfileChangeRequest;
 
 /**
  * Demonstrate Firebase Authentication using a Google ID Token.
@@ -171,48 +168,6 @@ public class SignInActivity extends AppCompatActivity implements
                         }
                     }
                 });
-    }
-
-    /**
-     * Creates an account using Firebase for a user with their email/password
-     * @param email user's email
-     * @param password user's password
-     */
-    private void createAccount(String email, String password) {
-        Log.d(TAG, "createAccount:" + email);
-//        if (!validateForm()) {
-//            return;
-//        }
-//        mAuth.createUserWithEmailAndPassword(email, password)
-//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<AuthResult> task) {
-//                        if (task.isSuccessful()) {
-//                            // Sign in success, update UI with the signed-in user's information
-//                            Log.d(TAG, "createUserWithEmail:success");
-//                            FirebaseUser user = mAuth.getCurrentUser();
-//                            Toast.makeText(getApplicationContext(), "Welcome " + user.getDisplayName() + ", your account has been created", Toast.LENGTH_SHORT).show();
-//                            editor.putBoolean("isLoggedIn", true);
-//                            editor.apply();
-//                            goToMainActivity();
-//                        } else {
-//                            try {
-//                                // If sign in fails, display a message to the user.
-//                                Log.w(TAG, "createUserWithEmail:failure", task.getException());
-//                                throw task.getException();
-//                            } catch(FirebaseAuthWeakPasswordException e) {
-//                                Toast.makeText(getApplicationContext(), "Password too weak", Toast.LENGTH_SHORT).show();
-//                            } catch(FirebaseAuthUserCollisionException e) {
-//                                Toast.makeText(getApplicationContext(), "User with these credentials already exists", Toast.LENGTH_SHORT).show();
-//                            } catch(Exception e) {
-//                                Toast.makeText(SignInActivity.this, e.getMessage(),
-//                                        Toast.LENGTH_SHORT).show();
-//                                Log.e(TAG, e.getMessage());
-//                            }
-//
-//                        }
-//                    }
-//                });
     }
 
     private boolean validateForm() {
