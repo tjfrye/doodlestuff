@@ -116,6 +116,7 @@ public class SignInActivity extends AppCompatActivity implements
                             FirebaseUser user = mAuth.getCurrentUser();
                             editor.putBoolean("isLoggedIn", true);
                             editor.apply();
+                            Toast.makeText(getApplicationContext(), "Welcome " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
                             goToMainActivity();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -179,39 +180,39 @@ public class SignInActivity extends AppCompatActivity implements
      */
     private void createAccount(String email, String password) {
         Log.d(TAG, "createAccount:" + email);
-        if (!validateForm()) {
-            return;
-        }
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "createUserWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(getApplicationContext(), "Welcome " + user.getDisplayName() + ", your account has been created", Toast.LENGTH_SHORT).show();
-                            editor.putBoolean("isLoggedIn", true);
-                            editor.apply();
-                            goToMainActivity();
-                        } else {
-                            try {
-                                // If sign in fails, display a message to the user.
-                                Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                throw task.getException();
-                            } catch(FirebaseAuthWeakPasswordException e) {
-                                Toast.makeText(getApplicationContext(), "Password too weak", Toast.LENGTH_SHORT).show();
-                            } catch(FirebaseAuthUserCollisionException e) {
-                                Toast.makeText(getApplicationContext(), "User with these credentials already exists", Toast.LENGTH_SHORT).show();
-                            } catch(Exception e) {
-                                Toast.makeText(SignInActivity.this, e.getMessage(),
-                                        Toast.LENGTH_SHORT).show();
-                                Log.e(TAG, e.getMessage());
-                            }
-
-                        }
-                    }
-                });
+//        if (!validateForm()) {
+//            return;
+//        }
+//        mAuth.createUserWithEmailAndPassword(email, password)
+//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<AuthResult> task) {
+//                        if (task.isSuccessful()) {
+//                            // Sign in success, update UI with the signed-in user's information
+//                            Log.d(TAG, "createUserWithEmail:success");
+//                            FirebaseUser user = mAuth.getCurrentUser();
+//                            Toast.makeText(getApplicationContext(), "Welcome " + user.getDisplayName() + ", your account has been created", Toast.LENGTH_SHORT).show();
+//                            editor.putBoolean("isLoggedIn", true);
+//                            editor.apply();
+//                            goToMainActivity();
+//                        } else {
+//                            try {
+//                                // If sign in fails, display a message to the user.
+//                                Log.w(TAG, "createUserWithEmail:failure", task.getException());
+//                                throw task.getException();
+//                            } catch(FirebaseAuthWeakPasswordException e) {
+//                                Toast.makeText(getApplicationContext(), "Password too weak", Toast.LENGTH_SHORT).show();
+//                            } catch(FirebaseAuthUserCollisionException e) {
+//                                Toast.makeText(getApplicationContext(), "User with these credentials already exists", Toast.LENGTH_SHORT).show();
+//                            } catch(Exception e) {
+//                                Toast.makeText(SignInActivity.this, e.getMessage(),
+//                                        Toast.LENGTH_SHORT).show();
+//                                Log.e(TAG, e.getMessage());
+//                            }
+//
+//                        }
+//                    }
+//                });
     }
 
     private boolean validateForm() {
@@ -248,13 +249,22 @@ public class SignInActivity extends AppCompatActivity implements
             emailSignIn(mEmailField.getText().toString(), mPasswordField.getText().toString());
         } else if(i == R.id.createAccountButton) {
             Log.d(TAG, "Email create account clicked");
-            createAccount(mEmailField.getText().toString(), mPasswordField.getText().toString());
+            //createAccount(mEmailField.getText().toString(), mPasswordField.getText().toString());
 
-            //TODO use fragment instead
-//            FragmentManager fragmentManager = getSupportFragmentManager();
-//            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//            CreateAccountFragment fragment = new CreateAccountFragment();
-//            fragmentTransaction.add(R.id.container, fragment).commit();
+            hideLogin();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            CreateAccountFragment fragment = new CreateAccountFragment();
+            fragmentTransaction.add(R.id.loginLayout, fragment).commit();
         }
+    }
+
+    private void hideLogin() { //TODO find more elegant solution
+        findViewById(R.id.signInButtonGoogle).setVisibility(View.GONE);
+        findViewById(R.id.createAccountButton).setVisibility(View.GONE);
+        findViewById(R.id.editTextpassword).setVisibility(View.GONE);
+        findViewById(R.id.editTextEmail).setVisibility(View.GONE);
+        findViewById(R.id.loginTextView).setVisibility(View.GONE);
+        findViewById(R.id.signInButtonEmail).setVisibility(View.GONE);
     }
 }

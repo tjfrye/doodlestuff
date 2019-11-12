@@ -27,8 +27,6 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
-import java.util.concurrent.Executor;
-
 public class CreateAccountFragment extends Fragment {
 
     private String TAG = "CreateAccountFragment";
@@ -42,17 +40,9 @@ public class CreateAccountFragment extends Fragment {
     private EditText mPasswordValidationField;
     private EditText mUsernameField;
 
-
-    public CreateAccountFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-
-        }
 
         mAuth = FirebaseAuth.getInstance();
     }
@@ -71,10 +61,10 @@ public class CreateAccountFragment extends Fragment {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
-        mEmailField = view.findViewById(R.id.accountEmail);
-        mPasswordField = view.findViewById(R.id.accountPassword);
-        mPasswordValidationField = view.findViewById(R.id.accountPasswordVerify);
-        mUsernameField = view.findViewById(R.id.accountUsername);
+        mEmailField = view.findViewById(R.id.emailEditText);
+        mPasswordField = view.findViewById(R.id.passwordEditText);
+        mPasswordValidationField = view.findViewById(R.id.passwordVerifyEditText);
+        mUsernameField = view.findViewById(R.id.usernameEditText);
 
         Button submitButton = view.findViewById(R.id.submitButton);
         submitButton.setOnClickListener(new View.OnClickListener() {
@@ -82,7 +72,6 @@ public class CreateAccountFragment extends Fragment {
             public void onClick(View view) {
                 createAccount(mEmailField.getText().toString(),
                         mPasswordField.getText().toString(),
-                        mPasswordValidationField.getText().toString(),
                         mUsernameField.getText().toString());
             }
         });
@@ -93,21 +82,21 @@ public class CreateAccountFragment extends Fragment {
      * @param email user's email
      * @param password user's password
      */
-    private void createAccount(String email, String password, String validationPassword, final String username) {
+    private void createAccount(String email, String password, final String username) {
         Log.d(TAG, "createAccount:" + email);
         if (!validateForm()) {
             return;
         }
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener((Executor) this, new OnCompleteListener<AuthResult>() {
+                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            Log.d(TAG, user.toString());
                             addPersonalInfo(user, username);
-                            Toast.makeText(getContext(), "Welcome " + user.getDisplayName() + ", your account has been created", Toast.LENGTH_SHORT).show();
                             editor.putBoolean("isLoggedIn", true);
                             editor.apply();
                             goToMainActivity();
@@ -156,6 +145,14 @@ public class CreateAccountFragment extends Fragment {
 
     private boolean validateForm() {
         boolean valid = true;
+
+        String username = mUsernameField.getText().toString();
+        if(TextUtils.isEmpty(username)) {
+            mUsernameField.setError("Required.");
+            valid = false;
+        } else {
+            mUsernameField.setError(null);
+        }
 
         String email = mEmailField.getText().toString();
         if (TextUtils.isEmpty(email)) {
