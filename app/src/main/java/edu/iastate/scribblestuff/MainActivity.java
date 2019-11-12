@@ -26,12 +26,12 @@ public class MainActivity extends AppCompatActivity {
                 getString(R.string.app_name), Context.MODE_PRIVATE);
 
         //Check if user is logged in via firebase
-       FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
 
         if(sharedPref.getBoolean("isLoggedIn", false)) { //check if someone is logged in
-            goToDraw();
+            goToHome();
         } else if(currentUser != null) {
             goToDraw(); //TODO set up sharedpreferences with user info
         } else {

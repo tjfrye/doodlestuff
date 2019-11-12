@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/homeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/gamesButton"
+        android:textSize="40sp"
+        android:text="Home" />
+
+    <Button
+        android:id="@+id/gamesButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/homeTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/friendsButton"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:textSize="18sp"
+        android:text="Games"
+        android:onClick="onGamesClicked"/>
+
+    <Button
+        android:id="@+id/drawButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/gamesButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/friendsButton"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:textSize="18sp"
+        android:text="Draw"
+        android:onClick="onDrawClicked"/>
+
+    <Button
+        android:id="@+id/friendsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/drawButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/signOutButton"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:textSize="18sp"
+        android:text="Friends"
+        android:onClick="onFriendsClicked"/>
+
+    <Button
+        android:id="@+id/signOutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/friendsButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:textSize="18sp"
+        android:text="Sign Out"
+        android:onClick="onSignOutClicked"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
