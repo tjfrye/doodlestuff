@@ -1,67 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="8dp"
+    android:layout_margin="8dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/usernameTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textColor="@android:color/black"
+        android:text="Username" />
+
+    <EditText
+        android:id="@+id/usernameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        tools:textColor="@android:color/darker_gray"
+        tools:text="yourUsername"/>
+
+    <TextView
+        android:id="@+id/emailTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textColor="@android:color/black"
+        android:text="Email"/>
+
+    <EditText
+        android:id="@+id/emailEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:gravity="center"
+        tools:textColor="@android:color/darker_gray"
+        tools:text="email@example.com"/>
+
+    <TextView
+        android:id="@+id/passwordTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textColor="@android:color/black"
+        android:text="Password"/>
+
+    <EditText
+        android:id="@+id/passwordEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:inputType="textPassword"
+        tools:textColor="@android:color/darker_gray"
+        tools:text="email@example.com"/>
+
+    <TextView
+        android:id="@+id/passwordVerifyTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textColor="@android:color/black"
+        android:text="Verify Password"/>
+
+    <EditText
+        android:id="@+id/passwordVerifyEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:inputType="textPassword"
+        tools:textColor="@android:color/darker_gray"
+        tools:text="email@example.com"/>
 
     <Button
         android:id="@+id/submitButton"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_margin="8dp"
-        android:padding="16dp"
-        android:textSize="20sp"
-        android:text="@string/submit"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/accountPasswordVerify" />
-
-    <EditText
-        android:id="@+id/accountEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:ems="10"
-        android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toTopOf="@+id/accountPassword"
-        app:layout_constraintStart_toStartOf="@+id/accountUsername"
-        app:layout_constraintTop_toBottomOf="@+id/accountUsername"
-        tools:text="@string/example_email" />
-
-    <EditText
-        android:id="@+id/accountPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:ems="10"
-        android:inputType="textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/accountPasswordVerify"
-        app:layout_constraintStart_toStartOf="@+id/accountEmail"
-        app:layout_constraintTop_toBottomOf="@+id/accountEmail"
-        tools:text="@string/password" />
-
-    <EditText
-        android:id="@+id/accountPasswordVerify"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:ems="10"
-        android:inputType="textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/submitButton"
-        app:layout_constraintStart_toStartOf="@+id/accountPassword"
-        app:layout_constraintTop_toBottomOf="@+id/accountPassword"
-        tools:text="@string/password" />
-
-    <EditText
-        android:id="@+id/accountUsername"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/accountEmail"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Username" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Submit"/>
+</LinearLayout>
