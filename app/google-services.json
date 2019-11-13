@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "927180476039-2rj7q1ldnmr3kcp5cvhm6ndqncpe5mdm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.iastate.scribblestuff",
+            "certificate_hash": "ccc09647d8ca12ce5b374576f6b1863f15a5460f"
+          }
+        },
+        {
+          "client_id": "927180476039-ojbb9jlctol82jr7hq4ajk6h42esfb3n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.iastate.scribblestuff",
+            "certificate_hash": "43508777b614046c43122b1356c1c8c4ff0c373b"
+          }
+        },
+        {
           "client_id": "927180476039-84or34ee433lq18gp026i6vackr4rvtj.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

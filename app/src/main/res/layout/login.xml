@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/loginLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/loginTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/editTextEmail"
+        android:textSize="40sp"
+        android:text="@string/please_login" />
+
+    <EditText
+        android:id="@+id/editTextEmail"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/loginTextView"
+        app:layout_constraintEnd_toStartOf="@+id/editTextpassword"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/signInButtonEmail"
+        android:ems="10"
+        android:padding="8dp"
+        android:layout_margin="8dp"
+        tools:text="@string/example_email"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:id="@+id/editTextpassword"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/loginTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/editTextEmail"
+        app:layout_constraintBottom_toTopOf="@+id/signInButtonEmail"
+        android:ems="10"
+        android:padding="8dp"
+        android:layout_margin="8dp"
+        tools:text="@string/password"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/signInButtonEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/editTextEmail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/signInButtonGoogle"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:textSize="18sp"
+        android:text="@string/login" />
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/signInButtonGoogle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/signInButtonEmail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/createAccountButton"
+        android:layout_gravity="center"
+        android:visibility="visible" />
+
+    <Button
+        android:id="@+id/createAccountButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:text="@string/create_account"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signInButtonGoogle" />
+</androidx.constraintlayout.widget.ConstraintLayout>
