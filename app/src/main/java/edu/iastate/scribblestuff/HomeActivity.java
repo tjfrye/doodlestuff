@@ -25,7 +25,8 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void onGamesClicked(View view) {
-
+        Intent intent = new Intent(this, GamesActivity.class);
+        startActivity(intent);
     }
 
     public void onDrawClicked(View view) {
