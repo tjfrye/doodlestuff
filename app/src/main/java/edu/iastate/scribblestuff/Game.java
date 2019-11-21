@@ -1,6 +1,8 @@
 package edu.iastate.scribblestuff;
 
-public class Game {
+import java.io.Serializable;
+
+public class Game implements Serializable {
     private int numTurns;
     private String partnerName1;
     private String partnerName2;
