@@ -18,12 +18,14 @@ class GameAdapter extends RecyclerView.Adapter<GameAdapter.ViewHolder> {
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
     private String displayName;
+    private Context context;
 
     // data is passed into the constructor
     GameAdapter(Context context, List<Game> data, String displayName) {
         this.displayName = displayName;
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
+        this.context = context;
     }
 
     // inflates the row layout from xml when needed
@@ -37,6 +39,8 @@ class GameAdapter extends RecyclerView.Adapter<GameAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         String opponentName;
+        String turnType;
+        String turns;
 
         Game current = mData.get(position);
         if(current.getPartnerName1().equals(displayName)) {
@@ -45,9 +49,16 @@ class GameAdapter extends RecyclerView.Adapter<GameAdapter.ViewHolder> {
             opponentName = current.getPartnerName1();
         }
 
+        if(current.getWhoDrawTurn().equals(displayName)) {
+            turnType = context.getResources().getString(R.string.type_draw);
+        } else {
+            turnType = context.getResources().getString(R.string.type_guess);
+        }
+        turns = context.getResources().getString(R.string.turn_number) + current.getNumTurns();
+
         holder.nameTextView.setText(opponentName);
-        holder.turnTypeTextView.setText(current.getWhoDrawTurn());
-        holder.turnNumberTextView.setText(String.valueOf(current.getNumTurns()));
+        holder.turnTypeTextView.setText(turnType);
+        holder.turnNumberTextView.setText(turns);
     }
 
     // total number of rows
