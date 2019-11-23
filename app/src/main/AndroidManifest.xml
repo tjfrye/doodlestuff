@@ -12,6 +12,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".GuessActivity"></activity>
+        <activity android:name=".GamesActivity"></activity>
         <activity android:name=".DrawActivity"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>

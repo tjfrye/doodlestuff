@@ -10,8 +10,14 @@
     <string name="create_account">Create Account</string>
     <string name="login">Login</string>
     <string name="submit">Submit</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="home">Home</string>
+    <string name="games">Games</string>
+    <string name="draw">Draw</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="friends">Friends</string>
+    <string name="type_draw">DRAW</string>
+    <string name="type_guess">GUESS</string>
+    <string name="turn_number">Turn No. </string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="clear">Clear</string>
     <string name="one"/>
