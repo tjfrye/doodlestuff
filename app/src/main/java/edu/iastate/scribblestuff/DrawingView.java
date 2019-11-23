@@ -1,6 +1,7 @@
 package edu.iastate.scribblestuff;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -21,6 +22,9 @@ public class DrawingView extends View {
     private int currentColor = 0xFF000000;
     private ArrayList<Integer> widths = new ArrayList<>();
     private int currentWidth = 6;
+    private int Width = 400;
+    private int Height = 600;
+    private Bitmap myBitmap = Bitmap.createBitmap( (int)Width, (int)Height, Bitmap.Config.RGB_565 );
 
     public DrawingView(Context context) {
         super(context);
@@ -57,7 +61,7 @@ public class DrawingView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
+      //  canvas.setBitmap(myBitmap);//sets bitmap for the canvas to draw on
         int i = 0;
         for (Path path : paths) {
             Paint paint = new Paint();
@@ -82,5 +86,8 @@ public class DrawingView extends View {
         colors.clear();
         widths.clear();
         invalidate();
+    }
+    private Bitmap getMyBitmap(){
+        return myBitmap;
     }
 }
