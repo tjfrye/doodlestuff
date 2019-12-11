@@ -5,6 +5,10 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Path;
 import android.graphics.drawable.ColorDrawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,11 +17,14 @@ import android.widget.SeekBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class DrawActivity extends AppCompatActivity {
-
-        DrawingView drawingView;
-        SeekBar drawThickness;
-        SeekBar drawColor;
+public class DrawActivity extends AppCompatActivity implements SensorEventListener {
+    private static final float NORMAL_GRAVITY = 2.7f;
+    private static final int SHAKE_DELAY = 500;
+    private static final int RESET_SHAKE_LENGTH = 3000;
+    private SensorEventListener mListener;
+    private DrawingView drawingView;
+    private SeekBar drawThickness;
+    private SeekBar drawColor;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +139,7 @@ public class DrawActivity extends AppCompatActivity {
                 drawingView.setCurrentWidth(drawColor.getProgress());
             }
         }
-        //TODO add a shake feature to delete the drawing
+
         public void deleteDrawing(View view) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Are you sure you want to erase everything?")
@@ -150,5 +157,44 @@ public class DrawActivity extends AppCompatActivity {
             AlertDialog dialog = builder.create();
             dialog.show();
         }
+    //TODO add a shake feature to delete the drawing
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        if (mListener != null) {
+            float x = sensorEvent.values[0];
+            float y = sensorEvent.values[1];
+            float z = sensorEvent.values[2];
+
+            float gX = x / SensorManager.GRAVITY_EARTH;
+            float gY = y / SensorManager.GRAVITY_EARTH;
+            float gZ = z / SensorManager.GRAVITY_EARTH;
+
+            // gForce will be close to 1 when there is no movement.
+//            float gForce = (float) Math.sqrt(gX * gX + gY * gY + gZ * gZ);
+//
+//            if (gForce > NORMAL_GRAVITY) {
+//                final long now = System.currentTimeMillis();
+//                // ignore shake events too close to each other (500ms)
+//                if (mShakeTimestamp + SHAKE_DELAY > now) {
+//                    return;
+//                }
+//
+//                // reset the shake count after 3 seconds of no shakes
+//                if (mShakeTimestamp + RESET_SHAKE_LENGTH < now) {
+//                    mShakeCount = 0;
+//                }
+//
+//                mShakeTimestamp = now;
+//                mShakeCount++;
+//
+//                mListener.onShake(mShakeCount);
+//            }
+
+        }
     }
+    @Override
+    public void onAccuracyChanged (Sensor sensor,int accuracy){
+
+    }
+}
 
