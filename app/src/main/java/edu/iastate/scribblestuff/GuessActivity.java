@@ -1,5 +1,6 @@
 package edu.iastate.scribblestuff;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Random;
 
+import static android.widget.Toast.LENGTH_LONG;
+
 public class GuessActivity extends AppCompatActivity {
     TextView word;
     String guess="HOUSE"; //this value will need to be recieved from database with bitmap
@@ -18,6 +21,7 @@ public class GuessActivity extends AppCompatActivity {
     private Button[] buttons = new Button[10];
     private Character[] letters = new Character[10];
     private Boolean[] pressed = new Boolean[10];
+    private int guessesLeft;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +37,7 @@ public class GuessActivity extends AppCompatActivity {
         buttons[8] = (Button)findViewById(R.id.buttonNine);
         buttons[9]= (Button)findViewById(R.id.buttonTen);
         word = (TextView)findViewById(R.id.Word);
+        guessesLeft =4;
         for(int i =0;i<10; i++){
             pressed[i] =false;
         }
@@ -150,8 +155,28 @@ public class GuessActivity extends AppCompatActivity {
                 break;
 
         }
+
+    }
+
+    public void onGuessClicked(View view) {
         if(word.getText().toString().equals(guess)){
-            Toast.makeText(this, "You Guessed It!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "You Guessed It!", LENGTH_LONG).show();
+        }
+        else{
+            guessesLeft--;
+            if(guessesLeft>0){
+                Toast.makeText(this, "Incorrect! You have " + guessesLeft + " guesses left!", LENGTH_LONG).show();
+                for(int i =0;i<10; i++){
+                    pressed[i] =false;
+                    buttons[i].setText(String.valueOf(letters[i]));
+                    word.setText("");
+                }
+            }else{
+                Toast.makeText(this, "You lost!", LENGTH_LONG).show();
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+            }
+
         }
     }
 }
