@@ -2,22 +2,33 @@ package edu.iastate.scribblestuff;
 
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Path;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.SeekBar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 public class DrawActivity extends AppCompatActivity {
 
         DrawingView drawingView;
         SeekBar drawThickness;
         SeekBar drawColor;
+        FirebaseStorage firebaseStorage;
+        private static String TAG = "DrawActivity";
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +133,8 @@ public class DrawActivity extends AppCompatActivity {
 
                 }
             });
+
+            firebaseStorage = FirebaseStorage.getInstance();
         }
         public void setColor(View view) {
             ColorDrawable buttonColor = (ColorDrawable) view.getBackground();
@@ -150,5 +163,25 @@ public class DrawActivity extends AppCompatActivity {
             AlertDialog dialog = builder.create();
             dialog.show();
         }
+
+    public void onSubmitClicked(View view) {
+        drawingView.getDrawing();
+        StorageReference storageReference = firebaseStorage.getReference();
+        StorageReference tempRef = storageReference.child("temp.png");
+
+        UploadTask uploadTask = tempRef.putBytes(drawingView.getDrawing());
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w(TAG, "Upload failed");
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Log.d(TAG, taskSnapshot.getMetadata().toString());
+            }
+        });
     }
+
+}
 

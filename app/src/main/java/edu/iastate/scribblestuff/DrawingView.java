@@ -1,9 +1,12 @@
 package edu.iastate.scribblestuff;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.media.Image;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -12,7 +15,13 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+
+import static android.graphics.Bitmap.CompressFormat.PNG;
 
 public class DrawingView extends View {
 
@@ -21,6 +30,7 @@ public class DrawingView extends View {
     private int currentColor = 0xFF000000;
     private ArrayList<Integer> widths = new ArrayList<>();
     private int currentWidth = 6;
+    private static String TAG = "DrawingView";
 
     public DrawingView(Context context) {
         super(context);
@@ -82,5 +92,32 @@ public class DrawingView extends View {
         colors.clear();
         widths.clear();
         invalidate();
+    }
+
+    //TODO move to correct thread if time
+    @SuppressLint("WrongThread")
+    public byte[] getDrawing() {
+        Bitmap bitmap = Bitmap.createBitmap(1500, 2300, Bitmap.Config.ARGB_8888);
+        Canvas tempCanvas = new Canvas(bitmap);
+        int i = 0;
+        for (Path path : paths) {
+            Log.d(TAG, "draw path");
+            Paint paint = new Paint();
+            paint.setColor(colors.get(i));
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(widths.get(i));
+            tempCanvas.drawPath(path, paint);
+            i++;
+        }
+
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+            // PNG is a lossless format, the compression factor (100) is ignored
+            return out.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
