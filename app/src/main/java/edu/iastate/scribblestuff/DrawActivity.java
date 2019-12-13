@@ -9,25 +9,36 @@ import android.graphics.drawable.ColorDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.SeekBar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
 public class DrawActivity extends AppCompatActivity {
-    
+
+    private static final String TAG = "Draw Activity";
     private DrawingView drawingView;
     private SeekBar drawThickness;
     private SeekBar drawColor;
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
     private ShakeDetector mShakeDetector;
+    private FirebaseStorage firebaseStorage;
 
     public interface SensorEventListener {
         void onShake(int count);
     }
+
     @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -143,6 +154,8 @@ public class DrawActivity extends AppCompatActivity {
 
                 }
             });
+
+            firebaseStorage = FirebaseStorage.getInstance();
         }
         public void setColor(View view) {
             ColorDrawable buttonColor = (ColorDrawable) view.getBackground();
@@ -183,5 +196,25 @@ public class DrawActivity extends AppCompatActivity {
         mSensorManager.unregisterListener(mShakeDetector);
         super.onPause();
     }
+
+    public void onSubmitClicked(View view) {
+        drawingView.getDrawing();
+        StorageReference storageReference = firebaseStorage.getReference();
+        StorageReference tempRef = storageReference.child("temp.png");
+
+        UploadTask uploadTask = tempRef.putBytes(drawingView.getDrawing());
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w(TAG, "Upload failed");
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Log.d(TAG, taskSnapshot.getMetadata().toString());
+            }
+        });
+    }
+
 }
 
