@@ -30,4 +30,5 @@
     <string name="eight"/>
     <string name="nine"/>
     <string name="ten"/>
+    <string name="guess">Guess</string>
 </resources>

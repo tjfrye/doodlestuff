@@ -1,10 +1,13 @@
 package edu.iastate.scribblestuff;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Path;
 import android.graphics.drawable.ColorDrawable;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,17 +17,35 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class DrawActivity extends AppCompatActivity {
+    
+    private DrawingView drawingView;
+    private SeekBar drawThickness;
+    private SeekBar drawColor;
+    private SensorManager mSensorManager;
+    private Sensor mAccelerometer;
+    private ShakeDetector mShakeDetector;
 
-        DrawingView drawingView;
-        SeekBar drawThickness;
-        SeekBar drawColor;
-
-        @Override
+    public interface SensorEventListener {
+        void onShake(int count);
+    }
+    @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_draw);
             drawingView = findViewById(R.id.canvasPage);
 
+            // ShakeDetector initialization
+            mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+            mAccelerometer = mSensorManager
+                    .getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            mShakeDetector = new ShakeDetector();
+
+            mShakeDetector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
+                @Override
+                public void onShake(int count) {
+                    deleteDrawing(drawingView);// once device is shaked run deleteDrawing
+                }
+            });
             // Create a custom ontouch listener object.
             View.OnTouchListener onTouchListener = new View.OnTouchListener() {
                 @Override
@@ -132,7 +153,7 @@ public class DrawActivity extends AppCompatActivity {
                 drawingView.setCurrentWidth(drawColor.getProgress());
             }
         }
-        //TODO add a shake feature to delete the drawing
+
         public void deleteDrawing(View view) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Are you sure you want to erase everything?")
@@ -150,5 +171,17 @@ public class DrawActivity extends AppCompatActivity {
             AlertDialog dialog = builder.create();
             dialog.show();
         }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mSensorManager.registerListener(mShakeDetector, mAccelerometer,	SensorManager.SENSOR_DELAY_UI);
     }
+
+    @Override
+    public void onPause() {
+        mSensorManager.unregisterListener(mShakeDetector);
+        super.onPause();
+    }
+}
 
