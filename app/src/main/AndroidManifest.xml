@@ -24,6 +24,7 @@
         <activity android:name=".HomeActivity" />
         <activity android:name=".FriendsListActivity" />
         <activity android:name=".SignInActivity" />
+        <activity android:name=".ChooseWordActivity" />
     </application>
 
 </manifest>

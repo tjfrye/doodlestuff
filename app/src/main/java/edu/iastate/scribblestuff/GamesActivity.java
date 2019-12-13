@@ -32,6 +32,7 @@ public class GamesActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
     private String displayName;
     private RecyclerView gamesRecyclerView;
+    private String gameId = "8jo28fusdjf20iey8s9dus";
 
 
     @Override
@@ -60,8 +61,8 @@ public class GamesActivity extends AppCompatActivity {
                     Log.d(TAG, "Added to gamesList");
                     gamesList.add(newGame);
                 }
-                GameAdapter gameAdapter = new GameAdapter(getApplicationContext(), gamesList, displayName);
-                gamesRecyclerView.setAdapter(gameAdapter);
+                GamesAdapter gamesAdapter = new GamesAdapter(getApplicationContext(), gamesList, displayName);
+                gamesRecyclerView.setAdapter(gamesAdapter);
 
             }
 
@@ -96,6 +97,10 @@ public class GamesActivity extends AppCompatActivity {
         DatabaseReference gameReference = databaseReference.push();
         gameReference.setValue(game);
         Log.d(TAG, gameReference.getKey());
+    }
+
+    String getGameId() {
+        return gameId;
     }
 
 }
