@@ -24,7 +24,7 @@ public class DrawingView extends View {
     private int currentWidth = 6;
     private int Width = 400;
     private int Height = 600;
-    private Bitmap myBitmap = Bitmap.createBitmap( (int)Width, (int)Height, Bitmap.Config.RGB_565 );
+    private Bitmap myBitmap = Bitmap.createBitmap(Width, Height, Bitmap.Config.RGB_565 );
 
     public DrawingView(Context context) {
         super(context);

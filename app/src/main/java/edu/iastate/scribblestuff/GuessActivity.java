@@ -26,17 +26,17 @@ public class GuessActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guess);
-        buttons[0] = (Button)findViewById(R.id.buttonOne);
-        buttons[1] = (Button)findViewById(R.id.buttonTwo);
-        buttons[2]= (Button)findViewById(R.id.buttonThree);
-        buttons[3] = (Button)findViewById(R.id.buttonFour);
-        buttons[4] = (Button)findViewById(R.id.buttonFive);
-        buttons[5] = (Button)findViewById(R.id.buttonSix);
-        buttons[6]= (Button)findViewById(R.id.buttonSeven);
-        buttons[7] = (Button)findViewById(R.id.buttonEight);
-        buttons[8] = (Button)findViewById(R.id.buttonNine);
-        buttons[9]= (Button)findViewById(R.id.buttonTen);
-        word = (TextView)findViewById(R.id.Word);
+        buttons[0] = findViewById(R.id.buttonOne);
+        buttons[1] = findViewById(R.id.buttonTwo);
+        buttons[2]= findViewById(R.id.buttonThree);
+        buttons[3] = findViewById(R.id.buttonFour);
+        buttons[4] = findViewById(R.id.buttonFive);
+        buttons[5] = findViewById(R.id.buttonSix);
+        buttons[6]= findViewById(R.id.buttonSeven);
+        buttons[7] = findViewById(R.id.buttonEight);
+        buttons[8] = findViewById(R.id.buttonNine);
+        buttons[9]= findViewById(R.id.buttonTen);
+        word = findViewById(R.id.Word);
         guessesLeft =4;
         for(int i =0;i<10; i++){
             pressed[i] =false;

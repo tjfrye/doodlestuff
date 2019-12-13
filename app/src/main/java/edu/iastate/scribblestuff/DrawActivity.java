@@ -1,13 +1,12 @@
 package edu.iastate.scribblestuff;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Path;
 import android.graphics.drawable.ColorDrawable;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -17,21 +16,36 @@ import android.widget.SeekBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class DrawActivity extends AppCompatActivity implements SensorEventListener {
-    private static final float NORMAL_GRAVITY = 2.7f;
-    private static final int SHAKE_DELAY = 500;
-    private static final int RESET_SHAKE_LENGTH = 3000;
-    private SensorEventListener mListener;
+public class DrawActivity extends AppCompatActivity {
+    
     private DrawingView drawingView;
     private SeekBar drawThickness;
     private SeekBar drawColor;
+    private SensorManager mSensorManager;
+    private Sensor mAccelerometer;
+    private ShakeDetector mShakeDetector;
 
-        @Override
+    public interface SensorEventListener {
+        void onShake(int count);
+    }
+    @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_draw);
             drawingView = findViewById(R.id.canvasPage);
 
+            // ShakeDetector initialization
+            mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+            mAccelerometer = mSensorManager
+                    .getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            mShakeDetector = new ShakeDetector();
+
+            mShakeDetector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
+                @Override
+                public void onShake(int count) {
+                    deleteDrawing(drawingView);// once device is shaked run deleteDrawing
+                }
+            });
             // Create a custom ontouch listener object.
             View.OnTouchListener onTouchListener = new View.OnTouchListener() {
                 @Override
@@ -157,44 +171,17 @@ public class DrawActivity extends AppCompatActivity implements SensorEventListen
             AlertDialog dialog = builder.create();
             dialog.show();
         }
-    //TODO add a shake feature to delete the drawing
+
     @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
-        if (mListener != null) {
-            float x = sensorEvent.values[0];
-            float y = sensorEvent.values[1];
-            float z = sensorEvent.values[2];
-
-            float gX = x / SensorManager.GRAVITY_EARTH;
-            float gY = y / SensorManager.GRAVITY_EARTH;
-            float gZ = z / SensorManager.GRAVITY_EARTH;
-
-            // gForce will be close to 1 when there is no movement.
-//            float gForce = (float) Math.sqrt(gX * gX + gY * gY + gZ * gZ);
-//
-//            if (gForce > NORMAL_GRAVITY) {
-//                final long now = System.currentTimeMillis();
-//                // ignore shake events too close to each other (500ms)
-//                if (mShakeTimestamp + SHAKE_DELAY > now) {
-//                    return;
-//                }
-//
-//                // reset the shake count after 3 seconds of no shakes
-//                if (mShakeTimestamp + RESET_SHAKE_LENGTH < now) {
-//                    mShakeCount = 0;
-//                }
-//
-//                mShakeTimestamp = now;
-//                mShakeCount++;
-//
-//                mListener.onShake(mShakeCount);
-//            }
-
-        }
+    public void onResume() {
+        super.onResume();
+        mSensorManager.registerListener(mShakeDetector, mAccelerometer,	SensorManager.SENSOR_DELAY_UI);
     }
-    @Override
-    public void onAccuracyChanged (Sensor sensor,int accuracy){
 
+    @Override
+    public void onPause() {
+        mSensorManager.unregisterListener(mShakeDetector);
+        super.onPause();
     }
 }
 
