@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -38,6 +39,7 @@ public class DrawActivity extends AppCompatActivity {
     private FirebaseStorage firebaseStorage;
     private String gameId;
     private String chosenWord;
+    private Button submitButton;
 
 
     public interface SensorEventListener {
@@ -56,7 +58,7 @@ public class DrawActivity extends AppCompatActivity {
             drawingView = findViewById(R.id.canvasPage);
 
             TextView wordTextView = findViewById(R.id.wordTextView);
-            wordTextView.setText(chosenWord);
+            wordTextView.setText(chosenWord.toUpperCase());
 
             // ShakeDetector initialization
             mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -70,6 +72,8 @@ public class DrawActivity extends AppCompatActivity {
                     deleteDrawing(drawingView);// once device is shaked run deleteDrawing
                 }
             });
+            submitButton = findViewById(R.id.submitButton);
+
             // Create a custom ontouch listener object.
             View.OnTouchListener onTouchListener = new View.OnTouchListener() {
                 @Override
@@ -154,7 +158,7 @@ public class DrawActivity extends AppCompatActivity {
                     drawColor.setThumbTintList(ColorStateList.valueOf(currentColor));
                     drawColor.getProgressDrawable().setColorFilter(
                             currentColor, android.graphics.PorterDuff.Mode.SRC_IN);
-
+                    submitButton.setBackgroundColor(currentColor);
                 }
 
                 @Override

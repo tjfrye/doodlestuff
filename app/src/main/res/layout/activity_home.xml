@@ -30,25 +30,13 @@
         android:text="@string/games"
         android:onClick="onGamesClicked"/>
 
-    <Button
-        android:id="@+id/drawButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/gamesButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/friendsButton"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:textSize="18sp"
-        android:text="@string/draw"
-        android:onClick="onDrawClicked"/>
+
 
     <Button
         android:id="@+id/friendsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/drawButton"
+        app:layout_constraintTop_toBottomOf="@+id/gamesButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/signOutButton"

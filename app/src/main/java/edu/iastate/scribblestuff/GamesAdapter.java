@@ -92,14 +92,16 @@ class GamesAdapter extends RecyclerView.Adapter<GamesAdapter.ViewHolder> {
         public void onClick(View view) {
             if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
             if(isGuesser) { // Start guessing
-                Intent intent = new Intent(context, GuessActivity.class);
+                Intent intent = new Intent(view.getContext(), GuessActivity.class);
                 intent.putExtra("gameId", "dfiuagu90kljsdf0");
-                context.startActivity(intent);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                view.getContext().startActivity(intent);
 
             } else { // Start drawing
-                Intent intent = new Intent(context, ChooseWordActivity.class);
+                Intent intent = new Intent(view.getContext(), ChooseWordActivity.class);
                 intent.putExtra("gameId","kajdfauugu2oihdoi");
-                context.startActivity(intent);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                view.getContext().startActivity(intent);
             }
 
         }

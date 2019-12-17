@@ -14,8 +14,6 @@ import com.google.firebase.auth.FirebaseAuth;
 public class HomeActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
-    String gameId = "83ds9u23ij90fsd"; //TODO change to the grabbed value when a game is clicked
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,12 +25,6 @@ public class HomeActivity extends AppCompatActivity {
 
     public void onGamesClicked(View view) {
         Intent intent = new Intent(this, GamesActivity.class);
-        startActivity(intent);
-    }
-
-    public void onDrawClicked(View view) {
-        Intent intent = new Intent(this, DrawActivity.class);
-        intent.putExtra("gameId", gameId);
         startActivity(intent);
     }
 

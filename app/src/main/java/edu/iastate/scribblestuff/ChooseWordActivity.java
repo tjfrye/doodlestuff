@@ -4,18 +4,27 @@ package edu.iastate.scribblestuff;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Random;
 
 
 /**
@@ -23,12 +32,17 @@ import com.google.firebase.database.FirebaseDatabase;
  */
 public class ChooseWordActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String TAG = "ChooseWordActivity";
     private String chosenWord;
-    private String word1 = "apple"; //TODO change words to ones taken from list
-    private String word2 = "dog";
-    private String word3 = "chair";
+    private String word1;
+    private String word2;
+    private String word3;
     private String customWord;
     private String gameId;
+    private Button word1Button;
+    private Button word2Button;
+    private Button word3Button;
+    private ArrayList<String> wordbank = new ArrayList();
 
     DatabaseReference databaseReference;
 
@@ -41,16 +55,13 @@ public class ChooseWordActivity extends AppCompatActivity implements View.OnClic
 
         setContentView(R.layout.activity_choose_word);
 
-        Button word1Button = findViewById(R.id.word1Button);
-        word1Button.setText(word1);
+        word1Button = findViewById(R.id.word1Button);
         word1Button.setOnClickListener(this);
 
-        Button word2Button = findViewById(R.id.word2Button);
-        word2Button.setText(word2);
+        word2Button = findViewById(R.id.word2Button);
         word2Button.setOnClickListener(this);
 
-        Button word3Button = findViewById(R.id.word3Button);
-        word3Button.setText(word3);
+        word3Button = findViewById(R.id.word3Button);
         word3Button.setOnClickListener(this);
 
         Button customWordButton = findViewById(R.id.customWordButton);
@@ -74,8 +85,42 @@ public class ChooseWordActivity extends AppCompatActivity implements View.OnClic
             }
         });
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        databaseReference = database.getReference();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        databaseReference = database.getReference("wordbank");
+
+        databaseReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Log.d(TAG, "Added word: " + dataSnapshot.getValue(String.class));
+
+                if(dataSnapshot.getValue().equals("end")) {
+                    setRandomWords();
+                } else {
+                    wordbank.add(dataSnapshot.getValue(String.class));
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
 
@@ -101,5 +146,28 @@ public class ChooseWordActivity extends AppCompatActivity implements View.OnClic
         intent.putExtra("chosenWord", chosenWord);
         intent.putExtra("gameId", gameId);
         startActivity(intent);
+    }
+
+    private void setRandomWords() {
+        int wordbankSize = wordbank.size();
+        Random random = new Random();
+
+        word1 = wordbank.get(random.nextInt(wordbank.size()));
+        String temp2 = wordbank.get(random.nextInt(wordbank.size()));
+        while(temp2.equals(word1)) {
+            temp2 = wordbank.get(random.nextInt(wordbankSize));
+        }
+        word2 = temp2;
+
+        String temp3 = wordbank.get(random.nextInt(wordbankSize));
+        while(temp3.equals(word1) || temp3.equals(word2)) {
+            temp3 = wordbank.get(random.nextInt(wordbankSize));
+        }
+        word3 = temp3;
+
+        word1Button.setText(word1);
+        word2Button.setText(word2);
+        word3Button.setText(word3);
+
     }
 }
