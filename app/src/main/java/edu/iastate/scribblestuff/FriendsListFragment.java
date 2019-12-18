@@ -157,7 +157,6 @@ public class FriendsListFragment extends Fragment {
         Log.d(TAG, "buildChallengeButton");
         challengeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-//                TableRow r = (TableRow)view.getParent();
                 Toast.makeText(getContext(), temp + " has been challenged!", Toast.LENGTH_SHORT).show();
                 challengeRequest(temp);
             }
@@ -174,8 +173,9 @@ public class FriendsListFragment extends Fragment {
         removeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 TableRow r = (TableRow)view.getParent();
-                removeRequest(r.getTag().toString());
                 TextView t = (TextView)r.getChildAt(0);
+                removeRequest(r.getTag().toString());
+                removeGames(t.getText().toString());
                 Toast.makeText(getContext(), "Removed friend: " + t.getText(), Toast.LENGTH_SHORT).show();
                 refresh();
             }
@@ -184,7 +184,6 @@ public class FriendsListFragment extends Fragment {
     }
 
     private void challengeRequest(String username) {
-        //create game instance
         Log.d(TAG, "key: " + username);
         Game game = new Game(
                 mCurrentUser.getDisplayName(),
@@ -199,6 +198,41 @@ public class FriendsListFragment extends Fragment {
     private void removeRequest(String key) {
         DatabaseReference ref = mDatabase.getReference("relationships");
         ref.child(key).removeValue();
+    }
+
+    private void removeGames(final String username) {
+        final DatabaseReference ref = mDatabase.getReference("games");
+        ref.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Log.d(TAG, "Child Added");
+                Game game = dataSnapshot.getValue(Game.class);
+                if((game.getPartnerName1().equals(mCurrentUser.getDisplayName()) || game.getPartnerName2().equals(mCurrentUser.getDisplayName()))
+                        && (game.getPartnerName1().equals(username) || game.getPartnerName2().equals(username))) {
+                    ref.child(dataSnapshot.getKey()).removeValue();
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Log.d(TAG, "Child Changed");
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "Child Removed");
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Log.d(TAG, "Child Moved");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d(TAG, "Child Cancelled");
+            }
+        });
     }
 
     private void refresh() {

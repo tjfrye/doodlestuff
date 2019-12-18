@@ -29,6 +29,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Random;
 
 /**
  * Demonstrate Firebase Authentication using a Google ID Token.
@@ -111,6 +115,13 @@ public class SignInActivity extends AppCompatActivity implements
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+
+                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users");
+                            Random rand = new Random();
+                            String code = String.format("%04d", rand.nextInt(10000));
+                            User u = new User(user.getDisplayName(), code, user.getUid());
+                            ref.child(ref.push().getKey()).setValue(u);
+
                             editor.putBoolean("isLoggedIn", true);
                             editor.apply();
                             Toast.makeText(getApplicationContext(), "Welcome " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
