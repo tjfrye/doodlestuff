@@ -23,6 +23,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -41,6 +43,8 @@ public class DrawActivity extends AppCompatActivity {
     private String chosenWord;
     private Button submitButton;
 
+    private DatabaseReference databaseReference;
+
 
     public interface SensorEventListener {
         void onShake(int count);
@@ -53,6 +57,9 @@ public class DrawActivity extends AppCompatActivity {
             gameId = getIntent().getStringExtra("gameId");
             chosenWord = getIntent().getStringExtra("chosenWord");
             Log.d(TAG, "chosenWord: " + chosenWord + ", gameId: " + gameId);
+
+            final FirebaseDatabase database = FirebaseDatabase.getInstance();
+            databaseReference = database.getReference(gameId); //get game info
 
             setContentView(R.layout.activity_draw);
             drawingView = findViewById(R.id.canvasPage);
@@ -233,6 +240,8 @@ public class DrawActivity extends AppCompatActivity {
                 Log.d(TAG, taskSnapshot.getMetadata().toString());
             }
         });
+
+        databaseReference.child("currentWord").setValue(chosenWord);
 
         //Round finished, go back to home
         Intent intent = new Intent(this, HomeActivity.class);

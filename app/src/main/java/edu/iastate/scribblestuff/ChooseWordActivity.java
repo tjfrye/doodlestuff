@@ -44,7 +44,8 @@ public class ChooseWordActivity extends AppCompatActivity implements View.OnClic
     private Button word3Button;
     private ArrayList<String> wordbank = new ArrayList();
 
-    DatabaseReference databaseReference;
+    DatabaseReference wordbankReference;
+    DatabaseReference pastWordsReference;
 
 
     @Override
@@ -86,9 +87,10 @@ public class ChooseWordActivity extends AppCompatActivity implements View.OnClic
         });
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        databaseReference = database.getReference("wordbank");
 
-        databaseReference.addChildEventListener(new ChildEventListener() {
+        //Get the wordbank
+        wordbankReference = database.getReference("wordbank");
+        wordbankReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Log.d(TAG, "Added word: " + dataSnapshot.getValue(String.class));
@@ -121,6 +123,8 @@ public class ChooseWordActivity extends AppCompatActivity implements View.OnClic
             }
         });
 
+        pastWordsReference = database.getReference(gameId).child("pastWords");
+
     }
 
 
@@ -152,8 +156,8 @@ public class ChooseWordActivity extends AppCompatActivity implements View.OnClic
         int wordbankSize = wordbank.size();
         Random random = new Random();
 
-        word1 = wordbank.get(random.nextInt(wordbank.size()));
-        String temp2 = wordbank.get(random.nextInt(wordbank.size()));
+        word1 = wordbank.get(random.nextInt(wordbankSize));
+        String temp2 = wordbank.get(random.nextInt(wordbankSize));
         while(temp2.equals(word1)) {
             temp2 = wordbank.get(random.nextInt(wordbankSize));
         }
