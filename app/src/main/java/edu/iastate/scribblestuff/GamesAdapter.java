@@ -1,6 +1,7 @@
 package edu.iastate.scribblestuff;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,21 +12,24 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 
-class GameAdapter extends RecyclerView.Adapter<GameAdapter.ViewHolder> {
-    private String TAG = "GameAdapter";
+class GamesAdapter extends RecyclerView.Adapter<GamesAdapter.ViewHolder> {
+    private String TAG = "GamesAdapter";
 
     private List<Game> mData;
+    private List<String> gameIds;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
     private String displayName;
     private Context context;
+    private Boolean isGuesser = false;
 
     // data is passed into the constructor
-    GameAdapter(Context context, List<Game> data, String displayName) {
+    GamesAdapter(Context context, List<Game> data, String displayName, List<String> gameIds) {
         this.displayName = displayName;
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
         this.context = context;
+        this.gameIds = gameIds;
     }
 
     // inflates the row layout from xml when needed
@@ -51,14 +55,17 @@ class GameAdapter extends RecyclerView.Adapter<GameAdapter.ViewHolder> {
 
         if(current.getWhoDrawTurn().equals(displayName)) {
             turnType = context.getResources().getString(R.string.type_draw);
+            isGuesser = false;
         } else {
             turnType = context.getResources().getString(R.string.type_guess);
+            isGuesser = true;
         }
         turns = context.getResources().getString(R.string.turn_number) + current.getNumTurns();
 
         holder.nameTextView.setText(opponentName);
         holder.turnTypeTextView.setText(turnType);
         holder.turnNumberTextView.setText(turns);
+        holder.isGuesser = isGuesser;
     }
 
     // total number of rows
@@ -73,6 +80,7 @@ class GameAdapter extends RecyclerView.Adapter<GameAdapter.ViewHolder> {
         TextView nameTextView;
         TextView turnTypeTextView;
         TextView turnNumberTextView;
+        Boolean isGuesser;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -85,7 +93,21 @@ class GameAdapter extends RecyclerView.Adapter<GameAdapter.ViewHolder> {
         @Override
         public void onClick(View view) {
             if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
-            //TODO start game
+            if(isGuesser) { // Start guessing
+                Intent intent = new Intent(view.getContext(), GuessActivity.class);
+                intent.putExtra("gameId", gameIds.get(getAdapterPosition()));
+                intent.putExtra("currentWord", getItem(getAdapterPosition()).getCurrentWord());
+                intent.putExtra("numTurns", getItem(getAdapterPosition()).getNumTurns());
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                view.getContext().startActivity(intent);
+
+            } else { // Start drawing
+                Intent intent = new Intent(view.getContext(), ChooseWordActivity.class);
+                intent.putExtra("gameId",gameIds.get(getAdapterPosition()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                view.getContext().startActivity(intent);
+            }
+
         }
     }
 

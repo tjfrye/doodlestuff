@@ -15,7 +15,6 @@ public class HomeActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,13 +28,13 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void onDrawClicked(View view) {
-        Intent intent = new Intent(this, DrawActivity.class);
+    public void onFriendsClicked(View view) {
+        Intent intent = new Intent(this, FriendsActivity.class);
         startActivity(intent);
     }
 
-    public void onFriendsClicked(View view) {
-        Intent intent = new Intent(this, FriendsListActivity.class);
+    public void onAccountInfoClicked(View view) {
+        Intent intent = new Intent(this, AccountInfoActivity.class);
         startActivity(intent);
     }
 

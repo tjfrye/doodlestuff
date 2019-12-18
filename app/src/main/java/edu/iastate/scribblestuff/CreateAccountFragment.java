@@ -26,6 +26,10 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Random;
 
 public class CreateAccountFragment extends Fragment {
 
@@ -97,6 +101,13 @@ public class CreateAccountFragment extends Fragment {
                             FirebaseUser user = mAuth.getCurrentUser();
                             Log.d(TAG, user.toString());
                             addPersonalInfo(user, username);
+
+                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users");
+                            Random rand = new Random();
+                            String code = String.format("%04d", rand.nextInt(10000));
+                            User u = new User(username, code, user.getUid());
+                            ref.child(ref.push().getKey()).setValue(u);
+
                             editor.putBoolean("isLoggedIn", true);
                             editor.apply();
                             goToMainActivity();

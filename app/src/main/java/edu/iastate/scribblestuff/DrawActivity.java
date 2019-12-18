@@ -2,6 +2,7 @@ package edu.iastate.scribblestuff;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Path;
@@ -9,30 +10,62 @@ import android.graphics.drawable.ColorDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
 public class DrawActivity extends AppCompatActivity {
-    
+
+    private static final String TAG = "Draw Activity";
     private DrawingView drawingView;
     private SeekBar drawThickness;
     private SeekBar drawColor;
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
     private ShakeDetector mShakeDetector;
+    private FirebaseStorage firebaseStorage;
+    private String gameId;
+    private String chosenWord;
+    private Button submitButton;
+
+    private DatabaseReference databaseReference;
+
 
     public interface SensorEventListener {
         void onShake(int count);
     }
-    @Override
+
+        @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+
+            gameId = getIntent().getStringExtra("gameId");
+            chosenWord = getIntent().getStringExtra("chosenWord");
+            Log.d(TAG, "chosenWord: " + chosenWord + ", gameId: " + gameId);
+
+            final FirebaseDatabase database = FirebaseDatabase.getInstance();
+            databaseReference = database.getReference("games").child(gameId); //get game info
+
             setContentView(R.layout.activity_draw);
             drawingView = findViewById(R.id.canvasPage);
+
+            TextView wordTextView = findViewById(R.id.wordTextView);
+            wordTextView.setText(chosenWord.toUpperCase());
 
             // ShakeDetector initialization
             mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -46,6 +79,8 @@ public class DrawActivity extends AppCompatActivity {
                     deleteDrawing(drawingView);// once device is shaked run deleteDrawing
                 }
             });
+            submitButton = findViewById(R.id.submitButton);
+
             // Create a custom ontouch listener object.
             View.OnTouchListener onTouchListener = new View.OnTouchListener() {
                 @Override
@@ -130,7 +165,7 @@ public class DrawActivity extends AppCompatActivity {
                     drawColor.setThumbTintList(ColorStateList.valueOf(currentColor));
                     drawColor.getProgressDrawable().setColorFilter(
                             currentColor, android.graphics.PorterDuff.Mode.SRC_IN);
-
+                    submitButton.setBackgroundColor(currentColor);
                 }
 
                 @Override
@@ -143,7 +178,10 @@ public class DrawActivity extends AppCompatActivity {
 
                 }
             });
+
+            firebaseStorage = FirebaseStorage.getInstance();
         }
+
         public void setColor(View view) {
             ColorDrawable buttonColor = (ColorDrawable) view.getBackground();
             drawingView.setCurrentColor(buttonColor.getColor());
@@ -154,6 +192,7 @@ public class DrawActivity extends AppCompatActivity {
             }
         }
 
+        //TODO add a shake feature to delete the drawing
         public void deleteDrawing(View view) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Are you sure you want to erase everything?")
@@ -183,5 +222,42 @@ public class DrawActivity extends AppCompatActivity {
         mSensorManager.unregisterListener(mShakeDetector);
         super.onPause();
     }
+
+    public void onSubmitClicked(View view) {
+        drawingView.getDrawing();
+        StorageReference storageReference = firebaseStorage.getReference();
+        StorageReference tempRef = storageReference.child(buildFileName());
+
+        UploadTask uploadTask = tempRef.putBytes(drawingView.getDrawing());
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w(TAG, "Upload failed");
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Log.d(TAG, taskSnapshot.getMetadata().toString());
+            }
+        });
+
+        databaseReference.child("currentWord").setValue(chosenWord);
+        databaseReference.child("drawingComplete").setValue(true);
+        DatabaseReference pastWordReference = databaseReference.child("pastWords").push();
+        pastWordReference.setValue(chosenWord);
+
+        //Round finished, go back to home
+        Intent intent = new Intent(this, HomeActivity.class);
+        startActivity(intent);
+    }
+
+    private String buildFileName() {
+            return gameId + ".png";
+    }
+
+    void setChosenWord(String chosenWord) {
+        this.chosenWord = chosenWord;
+    }
+
 }
 

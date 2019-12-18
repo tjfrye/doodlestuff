@@ -1,5 +1,6 @@
 package edu.iastate.scribblestuff;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -13,6 +14,8 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class DrawingView extends View {
@@ -25,6 +28,7 @@ public class DrawingView extends View {
     private int Width = 400;
     private int Height = 600;
     private Bitmap myBitmap = Bitmap.createBitmap(Width, Height, Bitmap.Config.RGB_565 );
+    private static String TAG = "DrawingView";
 
     public DrawingView(Context context) {
         super(context);
@@ -87,7 +91,36 @@ public class DrawingView extends View {
         widths.clear();
         invalidate();
     }
-    private Bitmap getMyBitmap(){
+    @SuppressLint("WrongThread")
+    private Bitmap getMyBitmap() {
         return myBitmap;
     }
+
+    //TODO move to correct thread if time
+    @SuppressLint("WrongThread")
+    public byte[] getDrawing() {
+        Bitmap bitmap = Bitmap.createBitmap(1500, 2300, Bitmap.Config.ARGB_8888);
+        Canvas tempCanvas = new Canvas(bitmap);
+        int i = 0;
+        for (Path path : paths) {
+            Log.d(TAG, "draw path");
+            Paint paint = new Paint();
+            paint.setColor(colors.get(i));
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(widths.get(i));
+            tempCanvas.drawPath(path, paint);
+            i++;
+        }
+
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+            // PNG is a lossless format, the compression factor (100) is ignored
+            return out.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
 }
