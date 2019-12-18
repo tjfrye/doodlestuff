@@ -29,7 +29,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void onFriendsClicked(View view) {
-        Intent intent = new Intent(this, FriendsListActivity.class);
+        Intent intent = new Intent(this, FriendsActivity.class);
         startActivity(intent);
     }
 
