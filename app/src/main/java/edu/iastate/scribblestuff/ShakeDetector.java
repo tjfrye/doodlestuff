@@ -7,13 +7,6 @@ import android.hardware.SensorManager;
 
 public class ShakeDetector implements SensorEventListener {
 
-    /*
-     * The gForce that is necessary to register as shake.
-     * Must be greater than 1G (one earth gravity unit).
-     * You can install "G-Force", by Blake La Pierre
-     * from the Google Play Store and run it to see how
-     *  many G's it takes to register a shake
-     */
     private static final float SHAKE_THRESHOLD_GRAVITY = 2.7F;
     private static final int SHAKE_SLOP_TIME_MS = 500;
     private static final int SHAKE_COUNT_RESET_TIME_MS = 3000;
@@ -22,19 +15,37 @@ public class ShakeDetector implements SensorEventListener {
     private long mShakeTimestamp;
     private int mShakeCount;
 
+    /**
+     * listens for a device to exceed the g-force of gravity
+     * @param listener
+     */
     public void setOnShakeListener(OnShakeListener listener) {
         this.mListener = listener;
     }
 
+    /**
+     *
+     */
     public interface OnShakeListener {
         void onShake(int count);
     }
 
+    /**
+     * This isn't necessary but needs to be here to run
+     * @param sensor
+     * @param accuracy
+     */
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // ignore
+        // ignore this
     }
 
+    /**
+     * When there is a shake event do this. It keeps track of valid shakes based on
+     * how close to each other they are or if they have happened repeatedly in the last
+     * few seconds.
+     * @param event
+     */
     @Override
     public void onSensorChanged(SensorEvent event) {
 
@@ -52,12 +63,12 @@ public class ShakeDetector implements SensorEventListener {
 
             if (gForce > SHAKE_THRESHOLD_GRAVITY) {
                 final long now = System.currentTimeMillis();
-                // ignore shake events too close to each other (500ms)
+                // ignore shake events if they are really close
                 if (mShakeTimestamp + SHAKE_SLOP_TIME_MS > now) {
                     return;
                 }
 
-                // reset the shake count after 3 seconds of no shakes
+                // if the device hasn't shaken for 3 seconds reset
                 if (mShakeTimestamp + SHAKE_COUNT_RESET_TIME_MS < now) {
                     mShakeCount = 0;
                 }
