@@ -32,4 +32,6 @@
     <string name="ten" />
     <string name="guess">Guess</string>
     <string name="choose_your_next_word">Choose Your Next Word</string>
+    <string name="challenge">Challenge</string>
+    <string name="remove">Remove</string>
 </resources>

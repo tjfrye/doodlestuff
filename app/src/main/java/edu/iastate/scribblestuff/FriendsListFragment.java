@@ -31,6 +31,7 @@ public class FriendsListFragment extends Fragment {
 
     private FirebaseDatabase mDatabase;
     private FirebaseUser mCurrentUser;
+    private DatabaseReference gamesReference;
 
     private TableLayout mFriendsListTable;
 
@@ -49,6 +50,7 @@ public class FriendsListFragment extends Fragment {
         mDatabase = FirebaseDatabase.getInstance();
         mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference ref = mDatabase.getReference("relationships");
+        gamesReference = mDatabase.getReference("games");
 
         ref.addChildEventListener(new ChildEventListener() {
             @Override
@@ -84,7 +86,7 @@ public class FriendsListFragment extends Fragment {
         });
     }
 
-    public void findUser(final String uid, final String key) {
+    private void findUser(final String uid, final String key) {
         final DatabaseReference ref = mDatabase.getReference("users");
         ref.addChildEventListener(new ChildEventListener() {
             @Override
@@ -119,7 +121,7 @@ public class FriendsListFragment extends Fragment {
         });
     }
 
-    public void buildRow(String key, String username) {
+    private void buildRow(String key, String username) {
         if(isAdded()) {
             TableRow row = new TableRow(getActivity().getApplicationContext());
             row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
@@ -133,7 +135,7 @@ public class FriendsListFragment extends Fragment {
             usernameText.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
             row.addView(usernameText);
 
-            Button challengeButton = buildChallengeButton();
+            Button challengeButton = buildChallengeButton(username);
             row.addView(challengeButton);
 
             Button removeButton = buildRemoveButton();
@@ -143,24 +145,27 @@ public class FriendsListFragment extends Fragment {
         }
     }
 
-    public Button buildChallengeButton() {
+    private Button buildChallengeButton(String username) {
+        final String temp = username;
         Button challengeButton = new Button(getActivity().getApplicationContext());
-        challengeButton.setText("Challenge");
+        challengeButton.setText(getString(R.string.challenge));
         challengeButton.setTextSize(18);
         challengeButton.setPadding(8,8,8,8);
         challengeButton.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        Log.d(TAG, "buildChallengeButton");
         challengeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                TableRow r = (TableRow)view.getParent();
-                challengeRequest(r.getTag().toString());
+//                TableRow r = (TableRow)view.getParent();
+                Toast.makeText(getContext(), temp + " has been challenged!", Toast.LENGTH_SHORT).show();
+                challengeRequest(temp);
             }
         });
         return challengeButton;
     }
 
-    public Button buildRemoveButton() {
+    private Button buildRemoveButton() {
         Button removeButton = new Button(getActivity().getApplicationContext());
-        removeButton.setText("Remove");
+        removeButton.setText(getString(R.string.remove));
         removeButton.setTextSize(18);
         removeButton.setPadding(8,8,8,8);
         removeButton.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
@@ -176,16 +181,25 @@ public class FriendsListFragment extends Fragment {
         return removeButton;
     }
 
-    public void challengeRequest(String key) {
+    private void challengeRequest(String username) {
         //create game instance
+        Log.d(TAG, "key: " + username);
+        Game game = new Game(
+                mCurrentUser.getDisplayName(),
+                username,
+                0,
+                mCurrentUser.getDisplayName(),
+                "");
+        DatabaseReference newReference = gamesReference.push();
+        newReference.setValue(game);
     }
 
-    public void removeRequest(String key) {
+    private void removeRequest(String key) {
         DatabaseReference ref = mDatabase.getReference("relationships");
         ref.child(key).removeValue();
     }
 
-    public void refresh() {
+    private void refresh() {
         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.placeHolder, new FriendsListFragment()).commit();
     }

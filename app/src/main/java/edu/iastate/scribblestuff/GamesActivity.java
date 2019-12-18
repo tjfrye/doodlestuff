@@ -59,6 +59,7 @@ public class GamesActivity extends AppCompatActivity {
                 Log.d(TAG, "Child Added, id: " + dataSnapshot.getKey());
                 Game newGame = dataSnapshot.getValue(Game.class);
                 Log.d(TAG, newGame.toString());
+                Log.d(TAG, "partnerName1: " + newGame.getPartnerName1() + ", partnerName2: " + newGame.getPartnerName2());
                 if(newGame.getPartnerName1().equals(displayName) || newGame.getPartnerName2().equals(displayName)) {
                     //If its not your turn to draw or you already drew
                     if(!newGame.getWhoDrawTurn().equals(displayName) || !newGame.getDrawingComplete()) {
