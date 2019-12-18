@@ -16,6 +16,7 @@ class GamesAdapter extends RecyclerView.Adapter<GamesAdapter.ViewHolder> {
     private String TAG = "GamesAdapter";
 
     private List<Game> mData;
+    private List<String> gameIds;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
     private String displayName;
@@ -23,11 +24,12 @@ class GamesAdapter extends RecyclerView.Adapter<GamesAdapter.ViewHolder> {
     private Boolean isGuesser = false;
 
     // data is passed into the constructor
-    GamesAdapter(Context context, List<Game> data, String displayName) {
+    GamesAdapter(Context context, List<Game> data, String displayName, List<String> gameIds) {
         this.displayName = displayName;
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
         this.context = context;
+        this.gameIds = gameIds;
     }
 
     // inflates the row layout from xml when needed
@@ -93,13 +95,13 @@ class GamesAdapter extends RecyclerView.Adapter<GamesAdapter.ViewHolder> {
             if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
             if(isGuesser) { // Start guessing
                 Intent intent = new Intent(view.getContext(), GuessActivity.class);
-                intent.putExtra("gameId", "dfiuagu90kljsdf0");
+                intent.putExtra("gameId", gameIds.get(getAdapterPosition()));
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 view.getContext().startActivity(intent);
 
             } else { // Start drawing
                 Intent intent = new Intent(view.getContext(), ChooseWordActivity.class);
-                intent.putExtra("gameId","kajdfauugu2oihdoi");
+                intent.putExtra("gameId",gameIds.get(getAdapterPosition()));
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 view.getContext().startActivity(intent);
             }

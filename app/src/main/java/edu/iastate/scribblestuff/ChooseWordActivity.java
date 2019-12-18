@@ -43,6 +43,7 @@ public class ChooseWordActivity extends AppCompatActivity implements View.OnClic
     private Button word2Button;
     private Button word3Button;
     private ArrayList<String> wordbank = new ArrayList();
+    private ArrayList<String> pastWords = new ArrayList();
 
     DatabaseReference wordbankReference;
     DatabaseReference pastWordsReference;
@@ -93,7 +94,7 @@ public class ChooseWordActivity extends AppCompatActivity implements View.OnClic
         wordbankReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.d(TAG, "Added word: " + dataSnapshot.getValue(String.class));
+                Log.d(TAG, "wordbank: " + dataSnapshot.getValue(String.class));
 
                 if(dataSnapshot.getValue().equals("end")) {
                     setRandomWords();
@@ -123,7 +124,39 @@ public class ChooseWordActivity extends AppCompatActivity implements View.OnClic
             }
         });
 
-        pastWordsReference = database.getReference(gameId).child("pastWords");
+        //Get words already used in this game
+        pastWordsReference = database.getReference("games").child(gameId).child("pastWords");
+        pastWordsReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                if(dataSnapshot.getValue().equals("end")) {
+                    setRandomWords();
+                } else {
+                    pastWords.add(dataSnapshot.getValue(String.class));
+                    Log.d(TAG, "pastwords: " + pastWords.get(pastWords.size() - 1));
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
@@ -153,25 +186,34 @@ public class ChooseWordActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void setRandomWords() {
-        int wordbankSize = wordbank.size();
-        Random random = new Random();
 
-        word1 = wordbank.get(random.nextInt(wordbankSize));
-        String temp2 = wordbank.get(random.nextInt(wordbankSize));
-        while(temp2.equals(word1)) {
-            temp2 = wordbank.get(random.nextInt(wordbankSize));
+        if(wordbank.size() > 0 && pastWords.size() > 0) {
+
+            int wordbankSize = wordbank.size();
+            Random random = new Random();
+
+            String temp1 = wordbank.get(random.nextInt(wordbankSize));
+            while (pastWords.contains(temp1)) {
+                temp1 = wordbank.get(random.nextInt(wordbankSize));
+            }
+            word1 = temp1;
+
+            String temp2 = wordbank.get(random.nextInt(wordbankSize));
+            while (temp2.equals(word1) || pastWords.contains(temp2)) {
+                temp2 = wordbank.get(random.nextInt(wordbankSize));
+            }
+            word2 = temp2;
+
+            String temp3 = wordbank.get(random.nextInt(wordbankSize));
+            while (temp3.equals(word1) || temp3.equals(word2) || pastWords.contains(temp3)) {
+                temp3 = wordbank.get(random.nextInt(wordbankSize));
+            }
+            word3 = temp3;
+
+            word1Button.setText(word1);
+            word2Button.setText(word2);
+            word3Button.setText(word3);
         }
-        word2 = temp2;
-
-        String temp3 = wordbank.get(random.nextInt(wordbankSize));
-        while(temp3.equals(word1) || temp3.equals(word2)) {
-            temp3 = wordbank.get(random.nextInt(wordbankSize));
-        }
-        word3 = temp3;
-
-        word1Button.setText(word1);
-        word2Button.setText(word2);
-        word3Button.setText(word3);
 
     }
 }

@@ -27,12 +27,12 @@ public class GamesActivity extends AppCompatActivity {
     private static String TAG = "GamesActivity";
 
     private List<Game> gamesList = new ArrayList<>();
+    private List<String> gamesIdList = new ArrayList<>();
     private FirebaseAuth mAuth;
     private FirebaseDatabase database;
     private DatabaseReference databaseReference;
     private String displayName;
     private RecyclerView gamesRecyclerView;
-    private String gameId = "8jo28fusdjf20iey8s9dus";
 
 
     @Override
@@ -50,18 +50,21 @@ public class GamesActivity extends AppCompatActivity {
         gamesRecyclerView = findViewById(R.id.gamesRecyclerView);
         gamesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        //writeNewGame();
+
 
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.d(TAG, "Child Added");
+                Log.d(TAG, "Child Added, id: " + dataSnapshot.getKey());
                 Game newGame = dataSnapshot.getValue(Game.class);
                 Log.d(TAG, newGame.toString());
                 if(newGame.getPartnerName1().equals(displayName) || newGame.getPartnerName2().equals(displayName)) {
                     Log.d(TAG, "Added to gamesList");
                     gamesList.add(newGame);
+                    gamesIdList.add(dataSnapshot.getKey());
                 }
-                GamesAdapter gamesAdapter = new GamesAdapter(getApplicationContext(), gamesList, displayName);
+                GamesAdapter gamesAdapter = new GamesAdapter(getApplicationContext(), gamesList, displayName, gamesIdList);
                 gamesRecyclerView.setAdapter(gamesAdapter);
 
             }
@@ -92,15 +95,11 @@ public class GamesActivity extends AppCompatActivity {
     }
 
     private void writeNewGame() {
-        Game game = new Game("Charles", "Chester", 3, "Chester", "peanut");
+        Game game = new Game("maggie", "simon", 5, "maggie", "cow");
         //databaseReference.child("game2").setValue(game);
         DatabaseReference gameReference = databaseReference.push();
         gameReference.setValue(game);
         Log.d(TAG, gameReference.getKey());
-    }
-
-    String getGameId() {
-        return gameId;
     }
 
 }

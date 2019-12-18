@@ -59,7 +59,7 @@ public class DrawActivity extends AppCompatActivity {
             Log.d(TAG, "chosenWord: " + chosenWord + ", gameId: " + gameId);
 
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
-            databaseReference = database.getReference(gameId); //get game info
+            databaseReference = database.getReference("games").child(gameId); //get game info
 
             setContentView(R.layout.activity_draw);
             drawingView = findViewById(R.id.canvasPage);
@@ -242,6 +242,8 @@ public class DrawActivity extends AppCompatActivity {
         });
 
         databaseReference.child("currentWord").setValue(chosenWord);
+        DatabaseReference pastWordReference = databaseReference.child("pastWords").push();
+        pastWordReference.setValue(chosenWord);
 
         //Round finished, go back to home
         Intent intent = new Intent(this, HomeActivity.class);
