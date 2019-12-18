@@ -242,6 +242,7 @@ public class DrawActivity extends AppCompatActivity {
         });
 
         databaseReference.child("currentWord").setValue(chosenWord);
+        databaseReference.child("drawingComplete").setValue(true);
         DatabaseReference pastWordReference = databaseReference.child("pastWords").push();
         pastWordReference.setValue(chosenWord);
 

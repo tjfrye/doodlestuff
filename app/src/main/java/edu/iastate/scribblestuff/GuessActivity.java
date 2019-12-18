@@ -2,14 +2,27 @@ package edu.iastate.scribblestuff;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.ByteArrayOutputStream;
 import java.util.Random;
 
 import static android.widget.Toast.LENGTH_LONG;
@@ -18,14 +31,52 @@ public class GuessActivity extends AppCompatActivity {
     TextView word;
     String guess="HOUSE"; //this value will need to be recieved from database with bitmap
     Bitmap bmp;
+    private String gameId;
+    private int numTurns;
     private Button[] buttons = new Button[10];
     private Character[] letters = new Character[10];
     private Boolean[] pressed = new Boolean[10];
     private int guessesLeft;
+    private static final String TAG = "GuessActivity";
+    private DatabaseReference databaseReference;
+    private FirebaseAuth auth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guess);
+
+        guess = getIntent().getStringExtra("currentWord").toUpperCase();
+        gameId = getIntent().getStringExtra("gameId");
+        numTurns = getIntent().getIntExtra("numTurns", 0);
+
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        StorageReference storageReference = firebaseStorage.getReference();
+        StorageReference pathReference = storageReference.child(gameId + ".png");
+
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference("games").child(gameId);
+
+        auth = FirebaseAuth.getInstance();
+
+        final ImageView drawingImageView = findViewById(R.id.drawingImageView);
+
+        final long ONE_MEGABYTE = 1024 * 1024;
+        pathReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                // Data for "images/island.jpg" is returns, use this as needed
+                bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                drawingImageView.setImageBitmap(bmp);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+                Log.e(TAG, exception.getMessage(), exception);
+            }
+        });
+
         buttons[0] = findViewById(R.id.buttonOne);
         buttons[1] = findViewById(R.id.buttonTwo);
         buttons[2]= findViewById(R.id.buttonThree);
@@ -161,6 +212,15 @@ public class GuessActivity extends AppCompatActivity {
     public void onGuessClicked(View view) {
         if(word.getText().toString().equals(guess)){
             Toast.makeText(this, "You Guessed It!", LENGTH_LONG).show();
+
+            numTurns++;
+            databaseReference.child("numTurns").setValue(numTurns);
+            databaseReference.child("whoDrawTurn").setValue(auth.getCurrentUser().getDisplayName());
+            databaseReference.child("drawingComplete").setValue(false);
+
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("gameId", gameId);
+            startActivity(intent);
         }
         else{
             guessesLeft--;
@@ -172,7 +232,7 @@ public class GuessActivity extends AppCompatActivity {
                     word.setText("");
                 }
             }else{
-                Toast.makeText(this, "You lost!", LENGTH_LONG).show();
+                Toast.makeText(this, "You lost! Word was " + guess, LENGTH_LONG).show();
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
             }

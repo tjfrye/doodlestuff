@@ -1,9 +1,7 @@
 package edu.iastate.scribblestuff;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Game implements Serializable {
@@ -12,8 +10,8 @@ public class Game implements Serializable {
     private String partnerName2;
     private String whoDrawTurn;
     private String currentWord;
+    private Boolean drawingComplete;
     private Map<String, Object> pastWords;
-    //private ArrayList<String> pastWords = new ArrayList<>();
 
     public Game() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -25,11 +23,10 @@ public class Game implements Serializable {
         this.numTurns = numTurns;
         this.whoDrawTurn = isDrawTurn;
         this.currentWord = currentWord;
-//        pastWords.add("start");
-//        pastWords.add("start2");
+        drawingComplete = false;
         pastWords = new HashMap<>();
         pastWords.put("0sgsfgs","start");
-        pastWords.put("gsfg1", "start2");
+        pastWords.put("gsfg1", "end");
     }
 
     public int getNumTurns() {
@@ -72,23 +69,6 @@ public class Game implements Serializable {
         this.currentWord = currentWord;
     }
 
-//    public HashMap<String, String> getPastWords() {
-//        return pastWords;
-//    }
-//
-//    public void setPastWords(HashMap<String, String> pastWords) {
-//        this.pastWords = pastWords;
-//    }
-
-
-//    public ArrayList<String> getPastWords() {
-//        return pastWords;
-//    }
-//
-//    public void setPastWords(ArrayList<String> pastWords) {
-//        this.pastWords = pastWords;
-//    }
-
 
     public Map<String, Object> getPastWords() {
         return pastWords;
@@ -97,4 +77,13 @@ public class Game implements Serializable {
     public void setPastWords(Map<String, Object> pastWords) {
         this.pastWords = pastWords;
     }
+
+    public Boolean getDrawingComplete() {
+        return drawingComplete;
+    }
+
+    public void setDrawingComplete(Boolean drawingComplete) {
+        this.drawingComplete = drawingComplete;
+    }
+
 }

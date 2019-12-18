@@ -60,9 +60,12 @@ public class GamesActivity extends AppCompatActivity {
                 Game newGame = dataSnapshot.getValue(Game.class);
                 Log.d(TAG, newGame.toString());
                 if(newGame.getPartnerName1().equals(displayName) || newGame.getPartnerName2().equals(displayName)) {
-                    Log.d(TAG, "Added to gamesList");
-                    gamesList.add(newGame);
-                    gamesIdList.add(dataSnapshot.getKey());
+                    //If its not your turn to draw or you already drew
+                    if(!newGame.getWhoDrawTurn().equals(displayName) || !newGame.getDrawingComplete()) {
+                        Log.d(TAG, "Added to gamesList");
+                        gamesList.add(newGame);
+                        gamesIdList.add(dataSnapshot.getKey());
+                    }
                 }
                 GamesAdapter gamesAdapter = new GamesAdapter(getApplicationContext(), gamesList, displayName, gamesIdList);
                 gamesRecyclerView.setAdapter(gamesAdapter);

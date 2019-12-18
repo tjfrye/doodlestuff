@@ -96,6 +96,8 @@ class GamesAdapter extends RecyclerView.Adapter<GamesAdapter.ViewHolder> {
             if(isGuesser) { // Start guessing
                 Intent intent = new Intent(view.getContext(), GuessActivity.class);
                 intent.putExtra("gameId", gameIds.get(getAdapterPosition()));
+                intent.putExtra("currentWord", getItem(getAdapterPosition()).getCurrentWord());
+                intent.putExtra("numTurns", getItem(getAdapterPosition()).getNumTurns());
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 view.getContext().startActivity(intent);
 
