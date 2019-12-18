@@ -6,4 +6,7 @@
     <color name="colorSlide">#A45F</color>
     <color name="black_overlay">#66000000</color>
     <color name="Black">#000000</color>
+    <color name="colorCardinal">#c8102e</color>
+    <color name="colorGold">#f1be48</color>
+    <color name="colorExtra">#E6543f</color>
 </resources>
