@@ -1,6 +1,7 @@
 package edu.iastate.scribblestuff;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -22,9 +23,12 @@ import java.util.ArrayList;
 
 public class FriendsListActivity extends AppCompatActivity {
 
+    private String TAG = "FriendsListActivity";
     ArrayList<String> friendsList;
     private TableLayout table;
     private FirebaseAuth mAuth;
+    private FirebaseDatabase database;
+    private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,14 +37,26 @@ public class FriendsListActivity extends AppCompatActivity {
 
         table = findViewById(R.id.friendsListTable);
 
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance();
+        databaseReference = database.getReference("friendcodes");
+
+
+
+
+
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        Log.d(TAG, "UID is " + currentUser.getUid());
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("user_relationship/");
 
-        Query query = myRef.orderByChild("user_first_id").equalTo(currentUser.getDisplayName());
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+
+
+
+        /*
+        Query query = myRef.orderByChild("user1").equalTo(currentUser.getDisplayName());
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
@@ -50,15 +66,30 @@ public class FriendsListActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
             }
         });
 
+         */
+
+
+    }
+    /*
+    public Query getFriends() {
+
+    }
+    */
+
+    public void onFriendsListClicked() {
+
+    }
+
+    public void onPendingClicked() {
 
     }
 
     public void onAddFriendClicked() {
 
     }
-
+    
 }
