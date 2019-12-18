@@ -33,6 +33,11 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void onAccountInfoClicked(View view) {
+        Intent intent = new Intent(this, AccountInfoActivity.class);
+        startActivity(intent);
+    }
+
     public void onSignOutClicked(View view) {
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

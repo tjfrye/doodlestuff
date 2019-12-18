@@ -1,5 +1,6 @@
 package edu.iastate.scribblestuff;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -131,6 +132,7 @@ public class PendingFragment extends Fragment {
             usernameText.setTextSize(20);
             usernameText.setPadding(8,8,8,8);
             usernameText.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            usernameText.setTextColor(Color.BLACK);
             row.addView(usernameText);
 
             if(outgoing) {
@@ -140,6 +142,7 @@ public class PendingFragment extends Fragment {
                 outgoingText.setTextSize(20);
                 outgoingText.setPadding(8,8,8,8);
                 outgoingText.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                outgoingText.setTextColor(Color.BLACK);
                 row.addView(outgoingText);
 
                 Button cancelButton = buildCancelButton();
