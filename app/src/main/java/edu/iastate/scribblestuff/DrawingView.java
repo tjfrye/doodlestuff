@@ -30,30 +30,60 @@ public class DrawingView extends View {
     private Bitmap myBitmap = Bitmap.createBitmap(Width, Height, Bitmap.Config.RGB_565 );
     private static String TAG = "DrawingView";
 
+    /**
+     *
+     * @param context
+     */
     public DrawingView(Context context) {
         super(context);
         Log.d("DrawViewConstruct","Called");
     }
 
+    /**
+     *
+     * @param context
+     * @param attrs
+     */
     public DrawingView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
+    /**
+     *
+     * @param context
+     * @param attrs
+     * @param defStyleAttr
+     */
     public DrawingView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
+    /**
+     *
+     * @param context
+     * @param attrs
+     * @param defStyleAttr
+     * @param defStyleRes
+     */
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public DrawingView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
+    /**
+     *
+     * @param path
+     */
     public void addPath(Path path) {
         paths.add(path);
         colors.add(currentColor);
         widths.add(currentWidth);
     }
 
+    /**
+     *
+     * @return
+     */
     public Path getLastPath() {
         if (paths.size() > 0) {
             return paths.get(paths.size() - 1);
@@ -62,6 +92,10 @@ public class DrawingView extends View {
         return null;
     }
 
+    /**
+     *
+     * @param canvas
+     */
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -77,25 +111,45 @@ public class DrawingView extends View {
         }
     }
 
+    /**
+     *
+     * @param color
+     */
     public void setCurrentColor(int color) {
         currentColor = color;
     }
 
+    /**
+     *
+     * @param width
+     */
     public void setCurrentWidth(int width) {
         currentWidth = (width + 1) * 2;
     }
 
+    /**
+     *
+     */
     public void erase() {
         paths.clear();
         colors.clear();
         widths.clear();
         invalidate();
     }
+
+    /**
+     *
+     * @return
+     */
     @SuppressLint("WrongThread")
     private Bitmap getMyBitmap() {
         return myBitmap;
     }
 
+    /**
+     *
+     * @return
+     */
     //TODO move to correct thread if time
     @SuppressLint("WrongThread")
     public byte[] getDrawing() {

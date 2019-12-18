@@ -22,14 +22,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.ByteArrayOutputStream;
 import java.util.Random;
 
 import static android.widget.Toast.LENGTH_LONG;
 
 public class GuessActivity extends AppCompatActivity {
     TextView word;
-    String guess="HOUSE"; //this value will need to be recieved from database with bitmap
+    String guess="HOUSE"; //this value will need to be received from database with bitmap
     Bitmap bmp;
     private String gameId;
     private int numTurns;
@@ -41,6 +40,10 @@ public class GuessActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
     private FirebaseAuth auth;
 
+    /**
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +99,10 @@ public class GuessActivity extends AppCompatActivity {
 
 
     }
+
+    /**
+     *
+     */
     private void setLetters(){
         char[] word = guess.toCharArray();
         Random r = new Random();
@@ -123,6 +130,10 @@ public class GuessActivity extends AppCompatActivity {
 
     }
 
+    /**
+     *
+     * @param view
+     */
     public void onClearClicked(View view) {
         for(int i =0;i<10; i++){
             pressed[i] =false;
@@ -131,6 +142,10 @@ public class GuessActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     *
+     * @param view
+     */
     public void letterClicked(View view) {
         switch (view.getId()) {
 
@@ -209,6 +224,10 @@ public class GuessActivity extends AppCompatActivity {
 
     }
 
+    /**
+     *
+     * @param view
+     */
     public void onGuessClicked(View view) {
         if(word.getText().toString().equals(guess)){
             Toast.makeText(this, "You Guessed It!", LENGTH_LONG).show();
